@@ -1,5 +1,8 @@
 import math
 
+jaccardMax = 1
+jaccardMin = 0
+
 def normalSimilarity(s1, s2):
     """
     """
