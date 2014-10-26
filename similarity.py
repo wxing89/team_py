@@ -30,4 +30,3 @@ def jaccardDistance(s1, s2):
     The return value is a float between 0 and 1, where 0 means equal, and 1 totally different.
     """
     return 1 - jaccardIndex(s1, s2)
-
