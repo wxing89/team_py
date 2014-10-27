@@ -34,6 +34,7 @@ def jaccardDistance(s1, s2):
     return 1 - jaccardIndex(s1, s2)
 
 
+
 def cosineSimilarity(s1, s2):
     """Compute the Cosine Similarity between the two sample set 's1' and 's2'.
 
