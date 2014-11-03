@@ -1,40 +1,23 @@
 #!/usr/bin/env python
 # -*- coding:utf8 -*-
 
-from recommend import Recommend
+from cf import CF
 import pickle
 import random
 
 def main():
-    with open('recommend.dump') as f:
-        reco = pickle.load(f)
+    with open('cf.dump') as f:
+        cf = pickle.load(f)
+    
+    with open('user_sim.dat', 'w') as f:
+        for user in cf.user_sim:
+            for u, sim in cf.user_sim[user]:
+                f.write('|'.join([user, u, str(sim), '\n']))
 
-    num = len(reco.userItem)
-
-    sig = 1
-    while sig:
-        n = int(random.random() * num)
-
-        user = reco.userItem.keys()[n]
-        print user
-
-        print 'ordered:', 
-        for item in reco.userItem[user]:
-            print item
-        print
-        print
-
-        print 'similarity:', reco.userSim[user]
-        print
-        print
-
-        print 'recommend:', 
-        for u, r in reco.userReco[user]:
-            print u, r
-        print
-        print
-        
-        sig = input('0 - Exit\n1 - Continue:')
+    with open('item_sim.dat', 'w') as f:
+        for item in cf.item_sim:
+            for i, sim in cf.item_sim[item]:
+                f.write('|'.join([item, i, str(sim), '\n']))
 
 
 if __name__ == '__main__':

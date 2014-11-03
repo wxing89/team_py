@@ -33,13 +33,11 @@ def cfItem(user, order, cf):
     reco = sorted(temp.items(), key=lambda x:x[1], reverse=True)
     return reco
 
-def printTuple(tuples):
-    for x, y in tuples:
-        print x, y
-
 def printItems(items):
-    for i in items:
-        print i
+    for item in items:
+        print item[0][0].strip().ljust(50), str(item[0][1]).rjust(15), 
+        print item[1][0].strip().ljust(50), str(item[1][1]).rjust(15)
+
 
 def main():
     with open('cf.dump') as f:
@@ -63,19 +61,16 @@ def main():
     print
 
     print 'Order:'
-    printItems(_u_i[user])
+    for i in _u_i[user]:
+        print i
     print
 
-    print 'recommend by user:'
-    reco = cfUser(user, order, cf)
-    printTuple(reco)
-    print
+    reco1 = cfUser(user, order, cf)
+    reco2 = cfItem(user, order, cf)
 
-    print 'recommend by item'
-    reco = cfItem(user, order, cf)
-    printTuple(reco)
-    print
-
+    reco = zip(reco1, reco2)
+    printItems(reco)
+    
 
 if __name__ == '__main__':
     main()
