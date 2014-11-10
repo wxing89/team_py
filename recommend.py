@@ -35,8 +35,7 @@ def cfItem(user, order, cf):
 
 def printItems(items):
     for item in items:
-        print item[0][0].strip().ljust(50), str(item[0][1]).rjust(15), 
-        print item[1][0].strip().ljust(50), str(item[1][1]).rjust(15)
+        print item[0][0].strip() + '\t' + str(item[0][1]) + '\t' + item[1][0].strip() + '\t' + str(item[1][1])
 
 
 def main():
