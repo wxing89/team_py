@@ -40,3 +40,32 @@ output:
     others:
         redis
         hadoop
+
+Data Interface:
+    Input:
+        File
+        Database
+    Output:
+        File
+        Database
+        Redis
+        Hadoop
+
+
+Algorithm:
+    CF:
+        Input:
+            order
+        Output:
+            user similarity
+            item similarity
+
+
+Recommend:
+    CF
+    User Based
+    Item Based
+
+
+
+
