@@ -1,0 +1,71 @@
+source data:
+    user
+    item
+    user-item
+
+analysis data:
+    user-sim
+    item-sim
+
+store:
+    object, file, database, etc. 
+
+input:
+    if file:
+        source
+        spilter
+        fields
+
+    if database:
+        connection
+        table
+        fields
+        condition
+
+    others:
+        redis
+        hadoop
+
+output:
+    if file:
+        target
+        spliter
+        fields
+
+    if database:
+        connection
+        table
+        fields
+
+    others:
+        redis
+        hadoop
+
+Data Interface:
+    Input:
+        File
+        Database
+    Output:
+        File
+        Database
+        Redis
+        Hadoop
+
+
+Algorithm:
+    CF:
+        Input:
+            order
+        Output:
+            user similarity
+            item similarity
+
+
+Recommend:
+    CF
+    User Based
+    Item Based
+
+
+
+

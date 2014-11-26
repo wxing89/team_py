@@ -1,105 +1,75 @@
 #!/usr/bin/env python
-# -*- coding:utf-8 -*-
+# -*- coding:utf8 -*-
 
 import pickle
-import similarity
+import random
 
-class Recommend():
-    """
-    userItem: user - item matrix, like
-        {userA: (item1, item2, item3, ...)}
-        {userB: (item2, item4, item5, ...)}
-        ...
+from order import Order
+from cf import CF
 
-    userSim: user similarity matrix, like
-        {userA: [(userB, 0.56), (userC, 0.38), ...]}
-        {userB: [(userD, 0.76), (userA, 0.56), ...]}
-        ...
 
-    userReco: user - recommendation matrix, like
-        {userA: [(reco1: 9.23), (reco2, 8.34), ...]}
-        {userB: [(reco1: 7.11), (reco2, 4.11), ...]}
-        ...
-    """
-    def __init__(self, size=20):
-        self.simSize = size
-        self.userItem = {}
-        self.userSim  = {}
-        self.userReco = {}
+def cfUser(user, order, cf):
+    _u_i = order.user_item
+    sim_users = cf.user_sim[user]
+    temp = {}
 
-    def addItem(self, user, item):
-        self.userItem[user] = self.userItem.get(user, set())
-        self.userItem[user].add(item)
+    for u, sim in sim_users:
+        for item in _u_i[u]:
+            if item not in _u_i[user]:
+                temp[item] = temp.get(item, 0) + sim / 20
+    reco = sorted(temp.items(), key=lambda x:x[1], reverse=True)
+    return reco
 
-    def getSim(self):
-        for u1 in self.userItem.keys():
-            for u2 in self.userItem.keys():
-                if u1 is u2:
-                    self.userSim[u1] = self.userSim.get(u1, [])
-                    continue
-                sim = similarity.jaccardIndex(self.userItem[u1], self.userItem[u2])
-                if sim > similarity.jaccardMin:
-                    self.userSim[u1] = self.userSim.get(u1, [])
-                    self.userSim[u1].append((u2, sim))
-            self.userSim[u1].sort(key=lambda x:x[1], reverse=True)
-            self.userSim[u1] = self.userSim[u1][:self.simSize]
 
-    def getReco(self):
-        for u1, simUsers in self.userSim.items():
-            temp = {}
-            for u2, sim in simUsers:
-                for item in self.userItem[u2]:
-                    if item not in self.userItem[u1]:
-                        temp[item] = temp.get(item, 0) + sim
-            self.userReco[u1] = sorted(temp.items(), key=lambda x:x[1], reverse=True)
+def cfItem(user, order, cf):
+    _i_s = cf.item_sim
+    items = order.user_item[user]
+    temp = {}
+
+    for item in items:
+        for i, sim in _i_s[item]:
+            if i not in items:
+                temp[i] = temp.get(i, 0) + sim / 20
+    reco = sorted(temp.items(), key=lambda x:x[1], reverse=True)
+    return reco
+
+def printItems(items):
+    for item in items:
+        print item[0][0].strip() + '\t' + str(item[0][1]) + '\t' + item[1][0].strip() + '\t' + str(item[1][1])
 
 
 def main():
-    recommend = Recommend()
+    with open('cf.dump') as f:
+        cf = pickle.load(f)
 
-    orderFile = 'order201408.txt'
-    f_reco = open(orderFile)
-    for line in f_reco:
-        temp = line.split('|')
-        user, item = temp[8].strip(), temp[7].strip()
-        recommend.addItem(user, item)
+    with open('order.dump') as f:
+        order = pickle.load(f)
 
-    recommend.getSim()
-    recommend.getReco()
+    _u_i = order.user_item
+    _i_u = order.item_user
+
+    _u_s = cf.user_sim
+    _i_s = cf.item_sim
+
+    ul = len(_u_s)
+    il = len(_i_s)
+
+    n = int(random.random() * ul)
+    user = _u_s.keys()[n]
+    print user
+    print
+
+    print 'Order:'
+    for i in _u_i[user]:
+        print i
+    print
+
+    reco1 = cfUser(user, order, cf)
+    reco2 = cfItem(user, order, cf)
+
+    reco = zip(reco1, reco2)
+    printItems(reco)
     
 
-    i = 0
-    for user, item in recommend.userItem.items():
-        if i < 20:
-            print user, '[', 
-            for t in item:
-                print t, ','
-            print ']'
-            i += 1
-        else:
-            break
-
-    i = 0
-    for user, sim in recommend.userSim.items():
-        if i < 20:
-            print user, sim
-            i += 1
-        else:
-            break
-
-    i = 0
-    for user, reco in recommend.userReco.items():
-        if i < 20:
-            print user, '[', 
-            for r, s in reco:
-                print '(', r, s, ')',
-            print ']'
-            i += 1
-        else:
-            break
-
-    with open('recommend.dump', 'w') as f:
-        pickle.dump(recommend, f)
-
 if __name__ == '__main__':
-	main()
+    main()
