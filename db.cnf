@@ -1,0 +1,30 @@
+# source defines user-item data
+
+source = mysql
+target = redis
+
+
+[file]
+dir = /home/roo/git/team_py/data
+file = user_item.data
+
+# mysql 
+# connection configuration
+
+# mysql host and port
+mysql.host = 192.168.9.36
+mysql.port = 6000
+
+# mysql username and password
+mysql.user = tuna
+mysql.passwd = tuna
+
+# select database
+mysql.db = userdb
+
+# connect_timeout
+# local_infile
+
+
+
+

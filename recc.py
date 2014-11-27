@@ -5,6 +5,7 @@ import os
 import sys
 import pickle
 import MySQLdb
+import redis
 
 import mycnf
 from mycnf import cnf
@@ -31,9 +32,12 @@ def cfItem(user, order, cf):
     temp = {}
 
     for item in items:
-        for i, sim in _i_s[item]:
-            if i not in items:
-                temp[i] = temp.get(i, 0) + sim / 20
+        try:
+            for i, sim in _i_s[item]:
+                if i not in items:
+                    temp[i] = temp.get(i, 0) + sim / 20
+        except:
+            pass
     reco = sorted(temp.items(), key=lambda x:x[1], reverse=True)
     return reco
 
@@ -41,7 +45,7 @@ def cfItem(user, order, cf):
 def getOrder(order, conn):
     try:
         cur = conn.cursor()
-        sql = "SELECT user_id, item_name FROM sam_user_item"
+        sql = "SELECT user_id, item_id FROM sam_user_item"
         cur.execute(sql)
         results = cur.fetchall()
         for row in results:
@@ -49,7 +53,7 @@ def getOrder(order, conn):
     except MySQLdb.Error, e:
         print 'Mysql Error %d: %s' % (e.args[0], e.args[1])
     finally:
-        conn.close()
+        cur.close()
 
 
 def getSim(cf, conn):
@@ -72,6 +76,8 @@ def getSim(cf, conn):
             cf.item_sim[i1].append((i2, sim))
     except MySQLdb.Error, e:
         print 'Mysql Error %d: %s' % (e.args[0], e.args[1])
+    finally:
+        cur.close()
 
 
 def getData(cf, order):
@@ -86,11 +92,16 @@ def getData(cf, order):
     conn.close()
 
 
-def writeCFUser(user, reco):
-    pass
+def writeCFUser(user_id, reco, r):
+    k = 'user:' + user_id + ':cfuser'
+    for (i, s) in reco:
+        r.zadd(k, i, s)
+
     
-def writeCFItem(user, reco):
-    pass
+def writeCFItem(user_id, reco, r):
+    k = 'user:' + user_id + ':cfitem'
+    for (i, s) in reco:
+        r.zadd(k, i, s)
         
 
 
@@ -102,13 +113,15 @@ def main():
 
     getData(cf, order)
     
-    for user in cf.sim_user.keys():
-        reco1 = cfUser(cf, order)
-        writeCFUser(user, reco2)
+    pool = redis.ConnectionPool(host='192.168.9.36', port=6379, db=0, encoding='utf8')
+    r = redis.Redis(connection_pool=pool)
 
-        reco2 = cfItem(cf, order)
-        writeCFItem(user, reco2)
+    for user in cf.user_sim.keys():
+        reco1 = cfUser(user, order, cf)
+        writeCFUser(user, reco1, r)
+
+        reco2 = cfItem(user, order, cf)
+        writeCFItem(user, reco2, r)
 
 if __name__ == '__main__':
-    import sys
-    main(*sys.argv)
+    main()

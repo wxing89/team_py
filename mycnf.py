@@ -4,7 +4,7 @@
 import MySQLdb
 import order
 
-cnf_file = 'db.ini'
+cnf_file = 'db.cnf'
 
 cnf = {}
 
