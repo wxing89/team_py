@@ -1,0 +1,7 @@
+'itemc020140826760207000002992112'
+'itemc020140917554585000003040615'
+1.384933178930237  report='S'  supp(X+Y)                                
+2.660323620543958  report='Y'  supp(Y)
+1.7464242120747395 report='X'  supp(X)                                  
+79.3010752688172   report='C'  conf(X=>Y) = supp(X+Y)/supp(X)           
+2980.880771663504  report='L'  lift(R) = conf(X=>Y)/supp(Y)
