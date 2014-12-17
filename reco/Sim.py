@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 
-import pickle
-
 from order import Order
 import similarity
+
+from logger import logger
 
 
 class Sim():
@@ -26,13 +26,21 @@ class Sim():
         'pearson': similarity.pearsonIndex
     }
 
-
     def __init__(self, order=None):
         self.order = order or Order()
         self.user_sim = {}
         self.item_sim = {}
 
-    def userBased(self, simFun='jaccard', userSize=20):
+    def user_based(self, simFun='jaccard', userSize=20):
+        """
+        Calculate user similarity.
+
+        :rtype : None
+        :param simFun: similarity algorithm: 'jaccard', 'cosine', 'pearson'
+        :param userSize: user similarity set size
+        :return: None
+        """
+        logger.info('calculate user similarity by {0:s} similarity'.format(simFun))
         if not self.order:
             return
 
@@ -52,7 +60,15 @@ class Sim():
             _u_s[u1].sort(key=lambda x:x[1], reverse=True)
             _u_s[u1] = _u_s[u1][:userSize]
 
-    def itemBased(self, simFun='cosine', itemSize=20):
+    def item_based(self, simFun='cosine', itemSize=20):
+        """
+        Calculate item similarity.
+
+        :rtype : None
+        :param simFun: similarity algorithm: 'jaccard', 'cosine', 'pearson'
+        :param userSize: item similarity set size
+        :return: None
+        """
         if not self.order:
             return
 
@@ -71,5 +87,3 @@ class Sim():
                     _i_s[i1].append((i2, sim))
             _i_s[i1].sort(key=lambda x:x[1], reverse=True)
             _i_s[i1] = _i_s[i1][:itemSize]
-
-

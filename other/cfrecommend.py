@@ -2,13 +2,13 @@
 # -*- coding:utf8 -*-
 
 from order import Order
-from cf import CF
+from sim import Sim
 
 
 class CFRecommend():
     def __init__(self, order=None, cf=None):
         self.order = order or Order()
-        self.cf = cf or CF()
+        self.cf = cf or Sim
         self.cfuser = {}
         self.cfitem = {}
 

@@ -1,16 +1,14 @@
 #!/usr/bin/python2.7
 # -*- coding:utf8 -*-
 
-import os
 
-import redis
 import MySQLdb
 
-import mycnf 
-from mycnf import cnf
+import conf
+from conf import cnf
 
 from order import Order
-from cf import CF
+from sim import Sim
 
 from cfrecommend import CFRecommend
 
@@ -73,13 +71,13 @@ def getdata(order, cf):
         print 'Not implenmented'
 
     try:
-        conn = MySQLdb.connect(host=cnf['mysql.host'], 
-            port=int(cnf['mysql.port']), 
-            user=cnf['mysql.user'],
-            passwd=cnf['mysql.passwd'],
-            db=cnf['mysql.db'],
-            connect_timeout=3,
-            local_infile=1)
+        conn = MySQLdb.connect(host=cnf['mysql.host'],
+                               port=int(cnf['mysql.port']),
+                               user=cnf['mysql.user'],
+                               passwd=cnf['mysql.passwd'],
+                               db=cnf['mysql.db'],
+                               connect_timeout=3,
+                               local_infile=1)
         mysql_readorder(order, conn)
         mysql_readcf(cf, conn)
         conn.close()
