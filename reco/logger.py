@@ -26,6 +26,7 @@ logger.addHandler(hdlr=console_handler)
 logger.addHandler(hdlr=file_handler)
 
 
+
 def test():
     logger.debug('debug message')
     logger.info('info message')

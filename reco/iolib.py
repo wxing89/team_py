@@ -19,7 +19,7 @@ def file_read_order(order, filename='order201408'):
 
 def mysql_read_order(order, conn):
     logger.info('Read user-item data from mysql ...')
-    sql = "SELECT * FROM sam_user_item"
+    sql = "SELECT * FROM ex_user_item"
     try:
         cur = conn.cursor()
         cur.execute(sql)
@@ -31,7 +31,6 @@ def mysql_read_order(order, conn):
         cur.close()
     except MySQLdb.Error, e:
         logger.error('Mysql Error {0:d}: {1:s}'.format(e.args[0], e.args[1]))
-
 
 def file_write_sim(sim):
     file_write_sim_user(sim, filename=os.path.join(file_cnf['directory'], 'user_sim.dat'))
@@ -84,7 +83,6 @@ def mysql_read_sim_user(sim, conn):
         logger.error('Mysql Error {0:d}: {1:s}'.format(e.args[0], e.args[1]))
     finally:
         cur.close()
-
 
 def mysql_read_sim_item(sim, conn):
     logger.info('Read item similarity data from mysql ...')

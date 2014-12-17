@@ -45,10 +45,20 @@ class Recommend():
         self.rec = rec
 
     def get_user_rec(self, user):
-        return self.rec[user]
+        return self.rec.get(user, {})
 
     def set_user_rec(self, user, r):
         self.rec[user] = r
+
+    def get_rec_user_item(self, user, item, score):
+        try:
+            return self.rec[user][item]
+        except IndexError:
+            return 0
+
+    def set_rec_user_item(self, user, item, score):
+        self.rec.setdefault(user, {})
+        self.rec[user][item] = score
 
     def by_knowledge(self):
         pass

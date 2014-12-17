@@ -24,6 +24,9 @@ schedule
 空间优化
 
 
+不同计算有独立日志 cal_sim.log cal_rec.log cal_rule.log
+设置输入输出方式为可选
+    file / mysql / redis
 
 
 

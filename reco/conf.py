@@ -6,8 +6,6 @@ import sys
 
 from logger import logger
 
-cnf_file = 'default.ini'
-
 cnf = configparser.ConfigParser()
 
 default_cnf = {}
@@ -15,7 +13,7 @@ file_cnf = {}
 mysql_cnf = {}
 redis_cnf = {}
 
-def read_cnf():
+def read_cnf(cnf_file):
     try:
         with open(cnf_file) as f:
             cnf.read_file(f)
@@ -25,9 +23,9 @@ def read_cnf():
         sys.exit(128)
 
 
-def init_cnf():
+def init_cnf(cnf_file='default.ini'):
     # read config
-    read_cnf()
+    read_cnf(cnf_file)
     # init default config
     init_default()
     # init file config
