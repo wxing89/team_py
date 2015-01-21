@@ -4,7 +4,7 @@
 import configparser
 import sys
 
-from logger import logger
+from mylog import MyLog
 
 cnf = configparser.ConfigParser()
 
@@ -18,8 +18,8 @@ def read_cnf(cnf_file):
         with open(cnf_file) as f:
             cnf.read_file(f)
     except Exception, e:
-        logger.error('read configure file failed.')
-        logger.error(str(e))
+        MyLog.logger.error('read configure file failed.')
+        MyLog.logger.error(str(e))
         sys.exit(128)
 
 

@@ -4,18 +4,25 @@
 import os
 import MySQLdb
 
-import conf
-from conf import mysql_cnf
+from mycnf import MyCnf
+from mylog import MyLog
 
 from order import Order
-from sim import Sim
-from logger import logger
+from similarity import Similaryity
 
 from iolib import *
 
+CNF_FILE = "sim.ini"
+LOG_FILE = "sim.log"
+
 
 def main():
-    conf.init_cnf()
+    mylog = MyLog(LOG_FILE)
+
+    mylog.info("PROGRAM BEGIN ...")
+
+    mycnf = MyCnf(CNF_FILE)
+    mysql_cnf = mycnf.mysql_cnf
 
     order = Order()
     conn = MySQLdb.connect(host=mysql_cnf['host'],
@@ -28,15 +35,15 @@ def main():
 
     mysql_read_order(order, conn)
 
-
-    sim = Sim(order)
-    logger.info('Calculate user similarity ...')
+    sim = Similaryity(order)
+    mylog.info('Calculate user similarity ...')
     sim.user_based()
-    logger.info('Calculate item similarity ...')
+    mylog.info('Calculate item similarity ...')
     sim.item_based()
 
     mysql_write_sim(sim, conn)
 
+    mylog.info("PROGRAM FINISHED.")
 
 if __name__ == '__main__':
     main()

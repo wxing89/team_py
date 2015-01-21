@@ -2,14 +2,14 @@
 # -*- coding:utf8 -*-
 
 from order import Order
-from sim import Sim
+from similarity import Similaryity
 from rule import Rule
 from rank import Rank
 
 class Recommend():
     def __init__(self, order=None, sim=None, rule=None, rank=None):
         self.order = order or Order()
-        self.sim = sim or Sim()
+        self.sim = sim or Similaryity()
         self.rule = rule or Rule()
         self.rank = rank or Rank()
         self.rec = {}
@@ -50,13 +50,13 @@ class Recommend():
     def set_user_rec(self, user, r):
         self.rec[user] = r
 
-    def get_rec_user_item(self, user, item, score):
+    def get_rec_score(self, user, item):
         try:
             return self.rec[user][item]
         except IndexError:
             return 0
 
-    def set_rec_user_item(self, user, item, score):
+    def set_rec_score(self, user, item, score):
         self.rec.setdefault(user, {})
         self.rec[user][item] = score
 
@@ -80,9 +80,9 @@ class Recommend():
         for u, s in sim_users:
             for item in _u_i[u]:
                 if item not in _u_i[user]:
-                    temp[item] = temp.get(item, 0) + s / 20
+                    temp[item] = temp.get(item, 0) + s / size
         r = sorted(temp.items(), key=lambda x:x[1], reverse=True)
-        return r
+        return r[:size]
 
     def by_sim_item(self, user, size=20):
         """
@@ -99,11 +99,11 @@ class Recommend():
             try:
                 for i, s in _i_s[item]:
                     if i not in items:
-                        temp[i] = temp.get(i, 0) + s / 20
+                        temp[i] = temp.get(i, 0) + s / size
             except:
                 pass
         r = sorted(temp.items(), key=lambda x:x[1], reverse=True)
-        return r
+        return r[:size]
 
     def by_rule(self, item, size=10):
         pass

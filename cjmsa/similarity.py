@@ -2,12 +2,10 @@
 # -*- coding:utf-8 -*-
 
 from order import Order
-import similarity
-
-from logger import logger
+import sims
 
 
-class Sim():
+class Similaryity():
     """
     user_sim: user similarity matrix
         {userA: [(userB, 0.56), (userC, 0.38), ...]}
@@ -21,15 +19,55 @@ class Sim():
     """
 
     __sims = {
-        'jaccard': similarity.jaccardIndex,
-        'cosine' : similarity.cosineSimilarity,
-        'pearson': similarity.pearsonIndex
+        'jaccard': sims.jaccardIndex,
+        'cosine' : sims.cosineSimilarity,
+        'pearson': sims.pearsonIndex
     }
 
     def __init__(self, order=None):
         self.order = order or Order()
         self.user_sim = {}
         self.item_sim = {}
+
+    def get_user_sim(self):
+        return self.user_sim
+
+    def set_user_sim(self, user_sim):
+        self.user_sim = user_sim
+
+    def get_item_sim(self, item_sim):
+        return self.item_sim
+
+    def set_item_sim(self, item_sim):
+        self.item_sim = item_sim
+
+    def get_user_sim_score(self, user1, user2):
+        try:
+            return self.user_sim[user1][user2]
+        except IndexError:
+            return 0
+
+    def set_user_sim_score(self, user1, user2, score):
+        self.user_sim.setdefault(user1, {})
+        self.user_sim[user1][user2] = score
+
+    def add_user_sim_score(self, user1, user2, score):
+        self.user_sim.setdefault(user1, {})
+        self.user_sim[user1].setdefault(user2, score)
+
+    def get_item_sim_score(self, item1, item2):
+        try:
+            return self.item_sim[item1][item2]
+        except IndexError:
+            return 0
+
+    def set_item_sim_score(self, item1, item2, score):
+        self.item_sim.setdefault(item1, {})
+        self.item_sim[item1][item2] = score
+
+    def add_item_sim_score(self, item1, item2, score):
+        self.item_sim.setdefault(item1, {})
+        self.item_sim[item1].setdefault(item2, score)
 
     def user_based(self, simFun='jaccard', userSize=20):
         """
